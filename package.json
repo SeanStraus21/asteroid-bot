@@ -1,0 +1,16 @@
+{
+  "name": "Asteroid Bot",
+  "version": "1.0.0",
+  "description": "DnD Bot",
+  "main": "bot.js",
+  "author": "Sean Straus",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "discord.io": "github:woor/discord.io#gateway_v6",
+    "discord.js": "^11.3.2",
+    "fs": "0.0.1-security",
+    "npm": "^5.7.1",
+    "request": "^2.86.0",
+    "winston": "^2.4.0"
+  }
+}
