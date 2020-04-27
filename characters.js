@@ -1,12 +1,15 @@
-const Utility = require('./utility.js');
-const Menu = require('./menu.js');
-const fs = require('fs');
-const Request = require('request');
-const Path = require('path');
+const Discord = require("discord.js");
+const Bot = require("./bot.js");
+const Utility = require("./utility.js");
+const Menu = require("./menu.js");
+const fs = require("fs");
+const Request = require("request");
+const Path = require("path");
 
-var imageDirectory = Path.resolve(__dirname, 'character/images');
+var imageDirectory = Path.resolve(__dirname, './images');
 var userList = [];
 LoadCharacters();
+
 
 function SaveCharacters(){
 	var data = JSON.stringify({characters: userList});
@@ -24,6 +27,17 @@ function CreateNewCharacter(username){
 	char.name = "Anonymous";
 	char.username = username;
 	char.portrait = "default.png";
+	char.race = "Human";
+	char.class = "Commoner";
+	char.alignment = "neutral";
+	char.level = 1;
+	char.strength = 8;
+	char.dexterity = 8;
+	char.constitution = 8;
+	char.intelligence = 8;
+	char.wisdom = 8;
+	char.charisma = 8;
+	char.skills = [];
 	userList.push(char);
 	SaveCharacters();
 	return char;
@@ -53,14 +67,21 @@ function SetCharacterImage(message){
 		}else{
 			image = attachments[0].url;
 		}
+		var userid = message.author.id;
 		var username = message.author.username;
-		var imageName = username +  "." + Utility.IsImageName(image);
-		var saveLocation = Path.resolve(imageDirectory + "/" + imageName);
+		var character = GetCharacterByUserName(username);
+		var imageName = "portrait." + Utility.IsImageName(image);
+		var path = Path.resolve(imageDirectory) + "/" + userid;
+			if (!fs.existsSync(path)){
+			fs.mkdirSync(path);
+		}
+		var saveLocation = (path + "/" + imageName);
+		
 		Request.get(image).on('response', function() {
-			var character = GetCharacterByUserName(username);
+			
 			character.portrait = imageName;
 			SaveCharacters();
-			Menu.Show(message, Bot.Persona().GENERIC_SUCCESS, "Your portrait has been set");
+			Menu.Show(message, "success", "Your portrait has been set");
 		}).pipe(fs.createWriteStream(saveLocation));
 	}
 }
@@ -84,7 +105,8 @@ function ViewCharacterSheet(message){
 	var args = Utility.GetArgumentList(message);
 	var user;
 	var username;
-	var embed = new Discord.RichEmbed();
+	const embed = new Discord.MessageEmbed();
+
 	if (args.length < 2) {
 		user = message.author;
 	} else {
@@ -110,34 +132,34 @@ function ViewCharacterSheet(message){
 		}
 	}
 
-	var charsheet = GetCharacterByName(user.username);
+	var charsheet = GetCharacterByUserName(user.username);
 	if (!charsheet) {
 		charsheet = NewCharacter(user.username);
 	}
 
 	var buttons = ["🚫"];
 
-	embed.title = charsheet.username;
-	embed.setThumbnail(charsheet.portrait);
+	embed.setTitle(charsheet.username);
+	var path;
+	if(charsheet.portrait == "default.png"){
+		path = "default.png";
+	}else{
+		path = user.id + "/portrait.png";
+	}
+	embed.attachFiles("./images/" + path);
+	embed.setThumbnail("attachment://" + charsheet.portrait);
+
+	embed.setColor("#FF0000");
 	
-	// embed.addField("Class: ", "Level " + charsheet.level + " " + charsheet.class);
-	// embed.addField("Alignment: ", charsheet.alignment);
-	// embed.addField("Strength: ", charsheet.strength, true);
-	// embed.addField("Toughness: ", charsheet.toughness, true);
-	// embed.addField("Speed: ", charsheet.speed, true);
-	// embed.addField("Magic: ", charsheet.magic, true);
-	// if (charsheet.skillPoints > 0) {
-	// 	var actionString = "**Skillpoints**: " + charsheet.skillPoints;
-	// 	actionString += "\n:one: Increase **Strength**";
-	// 	actionString += "\n:two: Increase **Toughness**";
-	// 	actionString += "\n:three: Increase **Speed**";
-	// 	actionString += "\n:four: Increase **Magic**";
-	// 	embed.addField("Thou hast unspent skill points!", actionString, true);
-	// 	buttons.push("1⃣");
-	// 	buttons.push("2⃣");
-	// 	buttons.push("3⃣");
-	// 	buttons.push("4⃣");
-	// }
+	embed.addField(charsheet.name, "Level " + charsheet.level + " " + charsheet.race + " " + charsheet.class);
+	embed.addField("Alignment: ", charsheet.alignment);
+	embed.addField("Attributes: ", 
+		"Strength: " + charsheet.strength + "\n" +
+		"Dexterity: " + charsheet.dexterity + "\n" +
+		"Constitution: " + charsheet.constitution + "\n" +
+		"Intelligence: " + charsheet.intelligence + "\n" +
+		"Wisdom: " + charsheet.wisdom + "\n" +
+		"Charisma: " + charsheet.charisma);
 
 	message.channel.send(embed).then(function (msg) {
 		msg.awaitReactions(HandleCharacterSheetButtonPress).catch();
@@ -151,6 +173,23 @@ function ViewCharacterSheet(message){
 			}
 		}).catch();
 	});
+}
+
+function HandleCharacterSheetButtonPress(reaction, user) {
+	if (reaction.emoji.reaction.count === 1) {
+		return;
+	}
+	var menu = reaction.message;
+	var buttonName = reaction.emoji.name;
+	var buttons = ["🚫"];
+	var buttonIndex = buttons.indexOf(buttonName);
+	var character = GetCharacterByUserName(user.username);
+
+	switch (buttonIndex) {
+		case 0:
+			menu.delete();
+			break;
+	}
 }
 
 exports.SetImage = function (message) {

@@ -1,4 +1,5 @@
 var Discord = require('discord.js');
+var Bot = require('./bot.js');
 
 var closeButton = "🚫";
 
@@ -21,7 +22,7 @@ function AttachCloseButton(msg){
 }
 
 function ShowHelpMenu(message){
-	var embed = new Discord.RichEmbed();
+	var embed = new Discord.MessageEmbed();
 	embed.title = Bot.Persona().HELP_TEXT_TITLE;
 	embed.addField("[] indicate required arguments, <> indicate optional arguments", "**setimg** [image URL | *image attachment*]\n**setname** [name]\n**charsheet <username>**\n**inventory**\n*Use \"!\" followed by dice expression to roll dice*");
 
@@ -29,14 +30,14 @@ function ShowHelpMenu(message){
 }
 
 function ShowErrorMenu(message, args){
-	var embed = new Discord.RichEmbed();
+	var embed = new Discord.MessageEmbed();
 	embed.addField(args[0],args[1]);
 	message.channel.send(embed).then(AttachCloseButton).catch(console.log);
 }
 
 function ShowConfirmationMenu(message, text){
 	var channel = message.channel;
-	var embed = new Discord.RichEmbed();
+	var embed = new Discord.MessageEmbed();
 	embed.addField(Bot.Persona().GENERIC_SUCCESS, text);
 	channel.send(embed).then(AttachCloseButton).catch(console.log);
 

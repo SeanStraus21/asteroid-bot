@@ -3,7 +3,8 @@ const auth = require("./auth.json");
 const fs = require("fs");
 const Menu = require("./menu.js");
 const Characters = require("./characters.js");
-const Game = require("./game.js")
+const Game = require("./game.js");
+const Personalities = require("./personalities.js");
 
 fs.writeFile('log.txt', '', function (err) {
 	if (err) {
@@ -12,7 +13,8 @@ fs.writeFile('log.txt', '', function (err) {
 });
 
 //Global Variables
-var botMentionString = '<@null>';
+var botMentionString = "<@!null>";
+var persona = Personalities.LoadPersona("Asteroid Bot");
 
 exports.GetStoryChannel = function (channel) {
 	return getStoryChannel(channel);
@@ -32,6 +34,10 @@ exports.GetAllMembers = function () {
 
 exports.BotMentionString = function () {
 	return botMentionString;
+};
+
+exports.Persona = function () {
+	return persona;
 };
 
 //Member Functions
@@ -94,8 +100,7 @@ bot.on('ready', function () {
 	console.log('Connected');
 	console.log('Logged in as: ');
 	console.log(bot.user.username + ' - (' + bot.user.id + ')');
-	botMentionString = '<@' + bot.user.id + '>';
-	initializeStoryChannels();
+	botMentionString = '<@!' + bot.user.id + '>';
 });
 
 //Callback Function For Messages
@@ -108,8 +113,9 @@ bot.on('message', function (message) {
 		return;
 	}
 
-	if (content.split(" ")[0] === botMentionString) {
-		args = content.toLowerCase().slice(botMentionString.length).trim().split(" ");
+	if (content.charAt(0) == '!') {
+
+		args = content.toLowerCase().slice(1).trim().split(" ");
 		command = args[0];
 		switch (command) {
 		case "setimg":
@@ -124,22 +130,26 @@ bot.on('message', function (message) {
 		case "charsheet":
 			Characters.ViewCharacterSheet(message);
 			break;
-		case "test":
-			//Characters.Test();
-			console.log(bot.channels);
-			break;
+		// case "test":
+		// 	console.log(bot.channels);
+		// 	break;
+		// case "clear":
+		// 		message.channel.messages.fetch({ limit: 100 }).then(function(messages){
+		// 			var messageArray = Array.from(messages.values());
+		// 			for(var i=0;i<messageArray.length;i++){
+		// 				messageArray[i].delete();
+		// 			}
+		// 		});
+		// 	break;
 		default:
-			Menu.Show(message, "error", [
-				Bot.Persona().INVALID_COMMAND, Bot.Persona().ERROR_HELP_PROMPT]);
-			break;
-		}
-	} else {
-		if(content.charAt(0) = '!'){
 			var diceroll = content.slice(1, content.length)
 			diceroll = diceroll.split(" ")[0];
 			if(Dice.IsDiceRoll(diceroll)){
 				Dice.Roll(message, diceroll);
+			}else{
+				Menu.Show(message, "error", [Bot.Persona().INVALID_COMMAND, Bot.Persona().ERROR_HELP_PROMPT]);
 			}
+			break;
 		}
 	}
 });
