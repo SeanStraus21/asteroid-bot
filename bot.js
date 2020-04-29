@@ -144,8 +144,8 @@ bot.on('message', function (message) {
 		default:
 			var diceroll = content.slice(1, content.length)
 			diceroll = diceroll.split(" ")[0];
-			if(Dice.IsDiceRoll(diceroll)){
-				Dice.Roll(message, diceroll);
+			if(Game.IsDiceRoll(diceroll)){
+				Game.Roll(message, diceroll);
 			}else{
 				Menu.Show(message, "error", [Bot.Persona().INVALID_COMMAND, Bot.Persona().ERROR_HELP_PROMPT]);
 			}
