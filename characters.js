@@ -51,11 +51,10 @@ function CreateNewCharacter(username){
 	return char;
 }
 
-function CreateNewSkill(name, modifier, rank, miscModifier) {
+function CreateNewSkill(modifier, rank, miscModifier) {
     var skill = {}
     skill.abilityModifier = modifier;
     skill.rank = rank;
-    skill.name = name;
     skill.miscModifier = miscModifier;
     skill.totalBonus = modifier + rank + miscModifier;
     return skill
@@ -73,12 +72,12 @@ function generateBaseSkills() {
         'spellcraft', 'stealth', 'survival', 'swim', 'use magic device'
     ]
 
-    finalSkillsArray = []
+    finalSkillsArray = {}
 
     for(var i = 0; i < skills.length; i++) {
         var skill = skills[i];
-        newSkill = CreateNewSkill(skill, 0, 0, 0)
-        finalSkillsArray.push(newSkill)
+        newSkill = CreateNewSkill(0, 0, 0)
+        finalSkillsArray[skill] = newSkill
     }
 
     return finalSkillsArray
