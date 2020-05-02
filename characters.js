@@ -63,13 +63,13 @@ function CreateNewSkill(modifier, rank, miscModifier) {
 function generateBaseSkills() {
     skills = [
         'acrobatics', 'appraise', 'bluff', 'climb',
-        'craft1', 'craft2', 'craft3', 'diplomacy', 'disable device',
-        'disguise', 'escape artist', 'fly', 'handle animal', 'heal', 'intimidate',
-        'knowledge (arcana)', 'knowledge (dungeoneering)', 'knowledge (engineering)',
-        'knowledge (geography)', 'knowledge (history)', 'knowledge (local)', 'knowledge (nature)',
-        'knowledge (nobility)', 'knowledge (planes)', 'knowledge (religion)', 'linguistics', 'perception',
-        'perform1', 'perform2', 'profession1', 'profession2', 'ride', 'sense motive', 'sleight of hand',
-        'spellcraft', 'stealth', 'survival', 'swim', 'use magic device'
+        'craft1', 'craft2', 'craft3', 'diplomacy', 'disableDevice',
+        'disguise', 'escapeArtist', 'fly', 'handleAnimal', 'heal', 'intimidate',
+        'knowledge(arcana)', 'knowledge(dungeoneering)', 'knowledge(engineering)',
+        'knowledge(geography)', 'knowledge(history)', 'knowledge(local)', 'knowledge(nature)',
+        'knowledge(nobility)', 'knowledge(planes)', 'knowledge(religion)', 'linguistics', 'perception',
+        'perform1', 'perform2', 'profession1', 'profession2', 'ride', 'senseMotive', 'sleightOfHand',
+        'spellcraft', 'stealth', 'survival', 'swim', 'useMagicDevice'
     ]
 
     finalSkillsArray = {}
@@ -81,6 +81,44 @@ function generateBaseSkills() {
     }
 
     return finalSkillsArray
+}
+
+function SetCharacterDetails(message){
+	var args = Utility.GetArgumentList(message);
+	if (args.length < 2) {
+		Menu.Show(message, "error", [
+			Bot.Persona().MISSING_ARGUMENT_TITLE, Bot.Persona().MISSING_ARGUMENT_TEXT_SINGULAR("character_name")
+		]);
+	} else {
+		var race = args.splice(1).join(',');
+		var playerClass = args.splice(2).join(',');
+		var alignment = args.splice(3).join(',');
+		var level = args.splice(4).join(',');
+		var hp = args.splice(5).join(',');
+		var gender = args.splice(6).join(',');
+		var height = args.splice(7).join(',');
+		var age = args.splice(8).join(',');
+		var weight = args.splice(9).join(',');
+		var hair = args.splice(10).join(',');
+		var eyes = args.splice(11).join(',');
+		GetCharacterByUserName(message.author.username).race = race;
+		GetCharacterByUserName(message.author.username).playerClass = playerClass;
+		GetCharacterByUserName(message.author.username).alignment = alignment;
+		GetCharacterByUserName(message.author.username).level = level;
+		GetCharacterByUserName(message.author.username).gender = gender;
+		GetCharacterByUserName(message.author.username).height = height;
+		GetCharacterByUserName(message.author.username).age = age;
+		GetCharacterByUserName(message.author.username).weight = weight;
+		GetCharacterByUserName(message.author.username).hair = hair;
+		GetCharacterByUserName(message.author.username).eyes = eyes;
+		SaveCharacters();
+
+		Menu.Show(message, Bot.Persona().GENERIC_SUCCESS, "Your name has been set to **" + name + "**");
+	}
+}
+
+function setSkills() {
+    // TBD
 }
 
 function GetCharacterByUserName(username){

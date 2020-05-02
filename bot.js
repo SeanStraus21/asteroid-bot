@@ -130,24 +130,16 @@ bot.on('message', function (message) {
 		case "charsheet":
 			Characters.ViewCharacterSheet(message);
 			break;
-		// case "test":
-		// 	console.log(bot.channels);
-		// 	break;
-		// case "clear":
-		// 		message.channel.messages.fetch({ limit: 100 }).then(function(messages){
-		// 			var messageArray = Array.from(messages.values());
-		// 			for(var i=0;i<messageArray.length;i++){
-		// 				messageArray[i].delete();
-		// 			}
-		// 		});
-		// 	break;
+		case "setCharacterDetails":
+		    Characters.setCharacterDetails(message);
+		    break;
 		default:
 			var diceroll = content.slice(1, content.length)
 			diceroll = diceroll.split(" ")[0];
 			if(Game.IsDiceRoll(diceroll)){
 				Game.Roll(message, diceroll);
 			}else{
-				Menu.Show(message, "error", [Bot.Persona().INVALID_COMMAND, Bot.Persona().ERROR_HELP_PROMPT]);
+				Menu.Show(message, "error", [bot.Persona().INVALID_COMMAND, bot.Persona().ERROR_HELP_PROMPT]);
 			}
 			break;
 		}

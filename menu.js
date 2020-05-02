@@ -24,7 +24,27 @@ function AttachCloseButton(msg){
 function ShowHelpMenu(message){
 	var embed = new Discord.MessageEmbed();
 	embed.title = Bot.Persona().HELP_TEXT_TITLE;
-	embed.addField("[] indicate required arguments, <> indicate optional arguments", "**setimg** [image URL | *image attachment*]\n**setname** [name]\n**charsheet <username>**\n**inventory**\n*Use \"!\" followed by dice expression to roll dice*");
+	embed.setDescription("[] indicate required arguments, <> indicate optional arguments");
+	embed.addFields(
+	    {
+	        "name": "setimg [image URL | *image attachment*]", "value": "Set image link or attachment for the current Discord user"
+	    },
+	    {
+	        "name": "setname [name]", "value": "Set character name for current Discord user"
+	    },
+	    {
+	        "name": "charsheet <username>", "value": " View the entire charsheet for the team or a specific character"
+	    },
+	    {
+	        "name": "inventory", "value": " Show character inventory"
+	    },
+	    {
+	        "name": "XdY+Z", "value": " Use \"!\" followed by dice expression to roll dice "
+	    },
+	    {
+	        "name": "setCharacterDetails", "value": "Comma-separated values in the following order: race, class, alignment, level, hp, gender, height, age, weight, hair, eyes"
+	    }
+	);
 
 	message.channel.send(embed).then(AttachCloseButton).catch(console.log);
 }
