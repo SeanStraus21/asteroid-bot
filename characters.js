@@ -31,16 +31,57 @@ function CreateNewCharacter(username){
 	char.class = "Commoner";
 	char.alignment = "neutral";
 	char.level = 1;
+	char.hp = 0;
+	char.gender = "M"
+	char.height = "5.5"
+	char.age = 21
+	char.weight = 150
+	char.hair = "black"
+	char.eyes = "black"
 	char.strength = 8;
 	char.dexterity = 8;
 	char.constitution = 8;
 	char.intelligence = 8;
 	char.wisdom = 8;
 	char.charisma = 8;
-	char.skills = [];
+	char.speed = ""
+	char.skills = generateBaseSkills();
 	userList.push(char);
 	SaveCharacters();
 	return char;
+}
+
+function CreateNewSkill(name, modifier, rank, miscModifier) {
+    var skill = {}
+    skill.abilityModifier = modifier;
+    skill.rank = rank;
+    skill.name = name;
+    skill.miscModifier = miscModifier;
+    skill.totalBonus = modifier + rank + miscModifier;
+    return skill
+}
+
+function generateBaseSkills() {
+    skills = [
+        'acrobatics', 'appraise', 'bluff', 'climb',
+        'craft1', 'craft2', 'craft3', 'diplomacy', 'disable device',
+        'disguise', 'escape artist', 'fly', 'handle animal', 'heal', 'intimidate',
+        'knowledge (arcana)', 'knowledge (dungeoneering)', 'knowledge (engineering)',
+        'knowledge (geography)', 'knowledge (history)', 'knowledge (local)', 'knowledge (nature)',
+        'knowledge (nobility)', 'knowledge (planes)', 'knowledge (religion)', 'linguistics', 'perception',
+        'perform1', 'perform2', 'profession1', 'profession2', 'ride', 'sense motive', 'sleight of hand',
+        'spellcraft', 'stealth', 'survival', 'swim', 'use magic device'
+    ]
+
+    finalSkillsArray = []
+
+    for(var i = 0; i < skills.length; i++) {
+        var skill = skills[i];
+        newSkill = CreateNewSkill(skill, 0, 0, 0)
+        finalSkillsArray.push(newSkill)
+    }
+
+    return finalSkillsArray
 }
 
 function GetCharacterByUserName(username){
